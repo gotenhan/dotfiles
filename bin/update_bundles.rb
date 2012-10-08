@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+
+git_bundles = [
+  "git://github.com/tpope/vim-git.git",                 # git highlighting
+  "git://github.com/tpope/vim-fugitive.git",            # git wrapper so awesome, it should be illegal
+  "git://github.com/tpope/vim-eunuch.git",              # helpers for Unix
+  "git://github.com/tpope/vim-unimpaired.git",          # pairs of handy bracket mappings
+  "git://github.com/tpope/vim-repeat.git",              # a smarter '.'
+  "git://github.com/tpope/vim-abolish.git",              # a smarter '.'
+  "git://github.com/tpope/vim-bundler.git",
+  "git://github.com/tpope/vim-surround.git",            # free hugs
+  "git://github.com/tpope/vim-speeddating.git",         # free hugs
+
+  "git://github.com/tsaleh/vim-matchit.git",            # a smarter '%'
+  "git://github.com/scrooloose/nerdtree.git",
+  "git://github.com/jistr/vim-nerdtree-tabs.git",
+  "git://github.com/scrooloose/nerdcommenter.git",      # sexy comments
+
+  "git://github.com/ervandew/supertab.git",             # all your completion needs via <tab>
+  "git://github.com/godlygeek/tabular.git",             # align your code
+
+  "git://github.com/altercation/vim-colors-solarized.git",  # pretty ViM
+
+  # Ruby Stuff
+  "git://github.com/vim-ruby/vim-ruby.git",             # ruby
+  "git://github.com/tpope/vim-endwise.git",             # add 'end' in ruby
+  "git://github.com/bkad/CamelCaseMotion.git",          # wordsAreCamelsToo
+  "git://github.com/tpope/vim-rake",                    # rake-ish stuff in vim
+  "git://github.com/tpope/vim-rails.git",
+#  "git://github.com/astashov/vim-ruby-debugger.git",
+
+  # Languages
+  "git://github.com/tpope/vim-haml.git",                # haml
+  "git://github.com/kchmck/vim-coffee-script.git",      # coffee-script
+  "git://github.com/pangloss/vim-javascript.git",       # javascript
+  "git://github.com/timcharper/textile.vim.git",        # textile
+  "git://github.com/tpope/vim-markdown.git",            # markdown
+  "git://github.com/vim-scripts/JSON.vim.git",          # json
+  "git://github.com/vim-scripts/FuzzyFinder.git",
+  "https://github.com/vim-scripts/L9",
+
+  # "git://github.com/msanders/snipmate.vim.git",
+  # "git://github.com/vim-scripts/Gist.vim.git",
+  # "git://github.com/tpope/vim-cucumber.git",
+  # "git://github.com/tsaleh/vim-shoulda.git",
+  
+  "git://github.com/majutsushi/tagbar.git",
+
+  "git://github.com/vim-scripts/Specky.git"
+]
+
+vim_org_scripts = [
+  ["IndexedSearch", "7062",  "plugin"],
+  ["jquery",        "12107", "syntax"],
+  # ["TagList",       "7701",  "zip"],
+]
+
+require 'fileutils'
+require 'open-uri'
+
+bundles_dir = File.join(File.dirname(__FILE__), "vim.symlink", "bundle")
+
+FileUtils.cd(bundles_dir)
+
+puts "trashing everything (lookout!)"
+Dir["*"].each {|d| FileUtils.rm_rf d }
+
+git_bundles.each do |url|
+  dir = url.split('/').last.sub(/\.git$/, '')
+  puts "unpacking #{url} into #{dir}"
+  `git clone --depth=1 #{url} #{dir}`
+  FileUtils.rm_rf(File.join(dir, ".git"))
+end
+
+vim_org_scripts.each do |name, script_id, script_type|
+  puts "downloading #{name}"
+  if script_type == 'zip'
+    local_file = File.join(name, "#{name}.#{script_type}")
+  else
+    local_file = File.join(name, script_type, "#{name}.vim")
+  end
+  FileUtils.mkdir_p(File.dirname(local_file))
+  File.open(local_file, "w") do |file|
+    file << open("http://www.vim.org/scripts/download_script.php?src_id=#{script_id}").read
+  end
+  if script_type == 'zip'
+    `unzip #{local_file} -d #{name}`
+    FileUtils.rm_rf(local_file)
+  end
+end
+
