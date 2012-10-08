@@ -41,7 +41,7 @@ end
 beautiful.init("/home/adrian/.config/awesome/current_theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm" --"x-terminal-emulator"
+terminal = "uxterm" --"x-terminal-emulator"
 editor = "gvim" -- os.getenv("EDITOR") or "editor"
 editor_cmd = "gvim" -- terminal .. " -e " .. editor
 
@@ -57,16 +57,16 @@ layouts =
 {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
---    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
---    awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
---    awful.layout.suit.fair.horizontal,
+    --awful.layout.suit.tile.left,
+    --awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
+    --awful.layout.suit.fair,
+    --awful.layout.suit.fair.horizontal,
     awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
+    --awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier
+    --awful.layout.suit.max.fullscreen,
+    --awful.layout.suit.magnifier
 }
 -- }}}
 
@@ -75,7 +75,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, 3, 4 }, s, layouts[1])
 end
 -- }}}
 
@@ -88,26 +88,40 @@ require('freedesktop.menu')
 menu_items = freedesktop.menu.new()
 
 
-function theme_load(theme)
+function theme_load(path, theme)
    local cfg_path = awful.util.getdir("config")
 
    -- Create a symlink from the given theme to /home/user/.config/awesome/current_theme
-   awful.util.spawn("ln -sfn " .. cfg_path .. "/themes/" .. theme .. " " .. cfg_path .. "/current_theme")
+   awful.util.spawn("ln -sfn " .. path .. "/" .. theme .. " " .. cfg_path .. "/current_theme")
    awesome.restart()
 end
 
 function theme_menu()
    local thememenu = {}
-   -- List your theme files and feed the menu table
-   local cmd = "ls -1 " .. awful.util.getdir("config") .. "/themes/"
-   local f = io.popen(cmd)
+   local systhememenu = {}
 
+   local themepath = awful.util.getdir("config") .. "/themes/"
+   local systhemepath = "/usr/share/awesome/themes/"
+
+   -- List your theme files and feed the menu table
+   local cmd = "ls -1 " .. themepath
+   local syscmd = "ls -1 " .. systhemepath
+
+   local f = io.popen(cmd)
    for l in f:lines() do
-	  local item = { l, function () theme_load(l) end }
+	  local item = { l, function () theme_load(themepath, l) end }
 	  table.insert(thememenu, item)
    end
-
    f:close()
+
+   local sysf = io.popen(syscmd)
+   for l in sysf:lines() do
+	  local item = { l, function () theme_load(systhemepath, l) end }
+	  table.insert(systhememenu, item)
+   end
+   sysf:close()
+   table.insert(thememenu, { "system", systhememenu} )
+
    return thememenu
 end
 
@@ -120,14 +134,30 @@ myawesomemenu = {
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
+
+shutdowncmd = 'dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop'
+rebootcmd = 'dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart'
+hibernatecmd = 'dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Hibernate'
+suspendcmd = 'dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Suspend'
+
+systemmenu = {
+  { "suspend", function() awful.util.spawn(suspendcmd) end  },
+  { "hibernate", function() awful.util.spawn(hibernatecmd) end },
+  { "reboot", function() awful.util.spawn(rebootcmd) end },
+  { "shutdown", function() awful.util.spawn(shutdowncmd) end }
+}
+
 table.insert(menu_items, { "themes", mythememenu })
 table.insert(menu_items, { "awesome", myawesomemenu, beautiful.awesome_icon })
+table.insert(menu_items, { "system", systemmenu })
 table.insert(menu_items, { "open terminal", terminal, freedesktop.utils.lookup_icon({icon = 'terminal'}) })
 
 mymainmenu = awful.menu({ items = menu_items, width = 150 })
 
 awful.menu.menu_keys.down = { "Down", "Tab", "j" }
 awful.menu.menu_keys.up = { "Up", "k" }
+awful.menu.menu_keys.left = { "Left", "h" }
+awful.menu.menu_keys.right = { "Right", "l" }
 
 mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
@@ -231,24 +261,26 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
--- {{{ Key bindings
-prevwindow = function ()
-  awful.client.focus.byidx(-1)
-  if client.focus then client.focus:raise() end
+local nextwindow = function ()
+    awful.client.focus.byidx( 1)
+    if client.focus then client.focus:raise() end
 end
 
-nextwindow = function ()
-  awful.client.focus.byidx(1)
-  if client.focus then client.focus:raise() end
+local prevwindow = function ()
+    awful.client.focus.byidx(-1)
+    if client.focus then client.focus:raise() end
 end
-    
+
+-- {{{ Key bindings
 globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
     awful.key({ modkey,           }, "k", prevwindow),
+    awful.key({ modkey, "Shift"   }, "Tab", prevwindow),
     awful.key({ modkey,           }, "j", nextwindow),
+    awful.key({ modkey,           }, "Tab", nextwindow),
     awful.key({ modkey,           }, "w", function () mymainmenu:show({keygrabber=true}) end),
 
     -- Layout manipulation
@@ -258,7 +290,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ "Mod1" }, "Tab", function ()
-      local cmenu = awful.menu.clients({width=245}, {keygrabber=true, coords={x=525, y=330} })
+      local cmenu = awful.menu.clients({width=245}, {keygrabber=true})
     end),
     
     -- Standard program
@@ -286,7 +318,9 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+    awful.key({ modkey,           }, "[", function() awful.util.spawn('transset-df --actual --dec 0.1') end),
+    awful.key({ modkey,           }, "]", function() awful.util.spawn('transset-df --actual --inc 0.1') end)
 )
 
 clientkeys = awful.util.table.join(
@@ -352,7 +386,10 @@ end
 clientbuttons = awful.util.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
-    awful.button({ modkey }, 3, awful.mouse.client.resize))
+    awful.button({ modkey }, 3, awful.mouse.client.resize),
+    awful.button({ modkey }, 4, function() awful.util.spawn('transset-df --actual --inc 0.1') end),
+    awful.button({ modkey }, 5, function() awful.util.spawn('transset-df --actual --dec 0.1') end)
+    )
 
 -- Set keys
 root.keys(globalkeys)
@@ -367,15 +404,12 @@ awful.rules.rules = {
                      focus = true,
                      keys = clientkeys,
                      buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
-      properties = { floating = true } },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
-    { rule = { class = "gimp" },
-      properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
+    { rule = { instance = "plugin-container" },
+     properties = { floating = true } },
+    { rule = { instance = "buddy_list" },
+     properties = { floating = true, sticky = true } },
 }
 -- }}}
 
@@ -383,7 +417,7 @@ awful.rules.rules = {
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
-    -- awful.titlebar.add(c, { modkey = modkey })
+     -- awful.titlebar.add(c, { modkey = modkey })
 
     -- Enable sloppy focus
     c:add_signal("mouse::enter", function(c)
