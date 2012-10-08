@@ -1,0 +1,10 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =8
+let g:netrw_dirhist_1='/home/adrian/anx/sources/git/xenia'
+let g:netrw_dirhist_2='/home/adrian/anx/sources/git/softconex_edf'
+let g:netrw_dirhist_3='/home/adrian/anx/sources/git/xenia'
+let g:netrw_dirhist_4='/home/adrian/anx/sources/git/resfinity_admin_tools'
+let g:netrw_dirhist_5='/home/adrian/anx/sources/git/synapse_hotelshop'
+let g:netrw_dirhist_6='/var/data/xenia/tfr/softconex'
+let g:netrw_dirhist_7='/home/adrian/anx/sources/git/xenia'
+let g:netrw_dirhist_8='/home/adrian/anx/sources/git/synapse_aer'
