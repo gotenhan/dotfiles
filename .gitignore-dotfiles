@@ -1,6 +1,5 @@
 /*
 !dotfiles.git/config
-!.gitfiles
 !.gitignore-global
 !.gitignore-dotfiles
 
@@ -21,6 +20,8 @@
 .vim/bundle
 .vim/.netrwhist
 
+!bin/
+bin/*
 !bin/update_bundles.rb
 !bin/vim.symlink
 
