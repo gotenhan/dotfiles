@@ -52,6 +52,7 @@ git_bundles = [
   "git://github.com/tpope/vim-markdown.git",            # markdown
   "git://github.com/vim-scripts/JSON.vim.git",          # json
   "git://github.com/vim-scripts/jQuery.git",
+  "git://github.com/depuracao/vim-rdoc.git",
 
   # "git://github.com/msanders/snipmate.vim.git",
   "git://github.com/vim-scripts/Gist.vim.git",

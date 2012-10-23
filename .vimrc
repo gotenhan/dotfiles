@@ -8,8 +8,6 @@ filetype plugin indent on
 "unfold all on start
 autocmd BufWinEnter * set foldlevel=999999
 
-colorscheme desert
-
 set expandtab
 set shiftwidth=2
 set tabstop=2
@@ -32,6 +30,7 @@ set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:¢
 set statusline+=%{fugitive#statusline()}
 set cdpath+=,~/projekty/
 set hidden
+set bg=dark
 
 set nospell
 set spelllang=en,pl
@@ -73,7 +72,6 @@ nmap <leader>Fw :Ack <C-R><C-W><CR>
 
 let g:xml_syntax_folding=1
 
-set tags=.tagfile,.vimtags
 let g:easytags_autorecurse = 0
 let g:easytags_autoupdate = 1
 let g:easytags_auto_highlight = 0
@@ -102,7 +100,7 @@ let g:speckySpecSwitcherKey  = "<Leader>rs"
 let g:speckyRunSpecKey       = "<Leader>rr"
 let g:speckyWindowType       = 2
 let g:speckyRunRdocCmd       = "ri -T -f rdoc"
-let g:speckyRunSpecCmd       = "rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter"
+let g:speckyRunSpecCmd       = "rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter --drb"
 
 nmap <leader>o :Utl<CR>
 let g:utl_cfg_hdl_scm_http_system = "silent !opera %u &"
@@ -120,3 +118,8 @@ nmap <Leader>fh :FufHelp!<CR>
 noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
 let g:fuf_keyPreview = '<C-v>'
+
+autocmd BufEnter * if &filetype == "" | setlocal ft=txt | endif
+
+autocmd FileType haml,sass setlocal foldmethod=indent
+autocmd FileType json,css,scss setlocal foldmethod=marker fmr={,}
