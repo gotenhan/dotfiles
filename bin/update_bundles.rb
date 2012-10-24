@@ -6,20 +6,34 @@ git_bundles = [
   "git://github.com/tpope/vim-eunuch.git",              # helpers for Unix
   "git://github.com/tpope/vim-unimpaired.git",          # pairs of handy bracket mappings
   "git://github.com/tpope/vim-repeat.git",              # a smarter '.'
-  "git://github.com/tpope/vim-abolish.git",              # a smarter '.'
-  "git://github.com/tpope/vim-bundler.git",
+  "git://github.com/tpope/vim-abolish.git",             
+  "git://github.com/tpope/vim-bundler.git",             
   "git://github.com/tpope/vim-surround.git",            # free hugs
-  "git://github.com/tpope/vim-speeddating.git",         # free hugs
+  "git://github.com/tpope/vim-speeddating.git",         
 
   "git://github.com/tsaleh/vim-matchit.git",            # a smarter '%'
-  "git://github.com/scrooloose/nerdtree.git",
-  "git://github.com/jistr/vim-nerdtree-tabs.git",
+  "git://github.com/scrooloose/nerdtree.git",           # sidebar for browsing files
+  "git://github.com/jistr/vim-nerdtree-tabs.git",       # shared nerdtree for all tabs
   "git://github.com/scrooloose/nerdcommenter.git",      # sexy comments
 
   "git://github.com/ervandew/supertab.git",             # all your completion needs via <tab>
   "git://github.com/godlygeek/tabular.git",             # align your code
+  "git://github.com/vim-scripts/utl.vim.git",           # links support
 
   "git://github.com/altercation/vim-colors-solarized.git",  # pretty ViM
+
+  "git://github.com/vim-scripts/FuzzyFinder.git",       # search files and tags using fuzzy match
+  "https://github.com/vim-scripts/L9",
+
+  "git://github.com/majutsushi/tagbar.git",             # sidebar with tags for current file
+  "git://github.com/henrik/vim-indexed-search.git",     # adds 'Match nth of m' when searching
+  "git://github.com/vim-scripts/vim-g.git",             # search google from withing vim
+  "git://github.com/vim-scripts/SudoEdit.vim.git",      # allow read/write with sudo priviliges
+  "git://github.com/vim-scripts/Conque-Shell.git",      # shell mode 
+  "git://github.com/vim-scripts/RepeatableYank.git",    # multiple yanks to selected bufer
+
+  "git://github.com/vim-scripts/ZoomWin.git",           # toggle window 'fullscreen'
+  "git://github.com/vim-scripts/ack.vim.git",           # use ack to find in files
 
   # Ruby Stuff
   "git://github.com/vim-ruby/vim-ruby.git",             # ruby
@@ -27,7 +41,8 @@ git_bundles = [
   "git://github.com/bkad/CamelCaseMotion.git",          # wordsAreCamelsToo
   "git://github.com/tpope/vim-rake",                    # rake-ish stuff in vim
   "git://github.com/tpope/vim-rails.git",
-#  "git://github.com/astashov/vim-ruby-debugger.git",
+  "git://github.com/vim-scripts/Specky.git",            # run rspec from withing vim
+  # "git://github.com/astashov/vim-ruby-debugger.git",
 
   # Languages
   "git://github.com/tpope/vim-haml.git",                # haml
@@ -36,23 +51,15 @@ git_bundles = [
   "git://github.com/timcharper/textile.vim.git",        # textile
   "git://github.com/tpope/vim-markdown.git",            # markdown
   "git://github.com/vim-scripts/JSON.vim.git",          # json
-  "git://github.com/vim-scripts/FuzzyFinder.git",
-  "https://github.com/vim-scripts/L9",
+  "git://github.com/vim-scripts/jQuery.git",
 
   # "git://github.com/msanders/snipmate.vim.git",
-  # "git://github.com/vim-scripts/Gist.vim.git",
-  # "git://github.com/tpope/vim-cucumber.git",
+  "git://github.com/vim-scripts/Gist.vim.git",
+  "git://github.com/tpope/vim-cucumber.git",
   # "git://github.com/tsaleh/vim-shoulda.git",
-  
-  "git://github.com/majutsushi/tagbar.git",
-
-  "git://github.com/vim-scripts/Specky.git"
 ]
 
 vim_org_scripts = [
-  ["IndexedSearch", "7062",  "plugin"],
-  ["jquery",        "12107", "syntax"],
-  # ["TagList",       "7701",  "zip"],
 ]
 
 require 'fileutils'
@@ -62,14 +69,20 @@ bundles_dir = File.join(File.dirname(__FILE__), "vim.symlink", "bundle")
 
 FileUtils.cd(bundles_dir)
 
-puts "trashing everything (lookout!)"
-Dir["*"].each {|d| FileUtils.rm_rf d }
+if(ARGV.include?('--purge') || ARGV.include?('-p'))
+  puts "trashing everything (lookout!)"
+  Dir["*"].each {|d| FileUtils.rm_rf d }
+end
 
 git_bundles.each do |url|
   dir = url.split('/').last.sub(/\.git$/, '')
-  puts "unpacking #{url} into #{dir}"
-  `git clone --depth=1 #{url} #{dir}`
-  FileUtils.rm_rf(File.join(dir, ".git"))
+  if Dir.exists? dir
+    puts "plugin #{dir} already installed"
+    puts `cd #{dir}; git pull --depth=1 --no-tags origin master` if ARGV.include?('--update-existing') || ARGV.include?('-u')
+  else
+    puts "unpacking #{url} into #{dir}"
+    `git clone --depth=1 #{url} #{dir}`
+  end
 end
 
 vim_org_scripts.each do |name, script_id, script_type|
