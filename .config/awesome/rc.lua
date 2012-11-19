@@ -87,7 +87,6 @@ require('freedesktop.menu')
 
 menu_items = freedesktop.menu.new()
 
-
 function theme_load(path, theme)
    local cfg_path = awful.util.getdir("config")
 
@@ -183,37 +182,45 @@ mytaglist.buttons = awful.util.table.join(
                     awful.button({ }, 4, awful.tag.viewnext),
                     awful.button({ }, 5, awful.tag.viewprev)
                     )
+local minimizetoggle = function (c)
+    if c == client.focus then
+        c.minimized = true
+    else
+        if not c:isvisible() then
+            awful.tag.viewonly(c:tags()[1])
+        end
+        -- This will also un-minimize
+        -- the client, if needed
+        client.focus = c
+        c:raise()
+    end
+end
+
+local toggleclientsmenu = function ()
+  if instance then
+    instance:hide()
+    instance = nil
+  else
+    instance = awful.menu.clients({ width=250 })
+  end
+end
+
+local nextwindow = function ()
+    awful.client.focus.byidx( 1)
+    if client.focus then client.focus:raise() end
+end
+
+local prevwindow = function ()
+    awful.client.focus.byidx(-1)
+    if client.focus then client.focus:raise() end
+end
+
 mytasklist = {}
 mytasklist.buttons = awful.util.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  if not c:isvisible() then
-                                                      awful.tag.viewonly(c:tags()[1])
-                                                  end
-                                                  -- This will also un-minimize
-                                                  -- the client, if needed
-                                                  client.focus = c
-                                                  c:raise()
-                                              end
-                                          end),
-                     awful.button({ }, 3, function ()
-                                              if instance then
-                                                  instance:hide()
-                                                  instance = nil
-                                              else
-                                                  instance = awful.menu.clients({ width=250 })
-                                              end
-                                          end),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                              if client.focus then client.focus:raise() end
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                              if client.focus then client.focus:raise() end
-                                          end))
+                     awful.button({ }, 1, minimizetoggle),
+                     awful.button({ }, 3, toggleclientsmenu),
+                     awful.button({ }, 4, nextwindow),
+                     awful.button({ }, 5, prevwindow))
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
@@ -260,16 +267,6 @@ root.buttons(awful.util.table.join(
     awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
-
-local nextwindow = function ()
-    awful.client.focus.byidx( 1)
-    if client.focus then client.focus:raise() end
-end
-
-local prevwindow = function ()
-    awful.client.focus.byidx(-1)
-    if client.focus then client.focus:raise() end
-end
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
