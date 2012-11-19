@@ -29,7 +29,6 @@ set updatetime=4000
 set foldmethod=syntax
 set clipboard=unnamedplus
 set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:¢
-set statusline+=%{fugitive#statusline()}
 set cdpath+=,~/projekty/
 set hidden
 
@@ -74,7 +73,7 @@ nmap <leader>Fw :Ack <C-R><C-W><CR>
 
 let g:xml_syntax_folding=1
 
-set tags=.tagfile,.vimtags
+set tags=tags,.tagfile,.vimtags
 let g:easytags_autorecurse = 0
 let g:easytags_autoupdate = 1
 let g:easytags_auto_highlight = 0
