@@ -12,6 +12,8 @@
 !.bash_logout
 !.bashrc
 
+!.inputrc
+
 !.viminfo
 !.vimrc
 .viminfo
