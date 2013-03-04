@@ -25,7 +25,7 @@
 
 !bin/
 bin/*
-!bin/update_bundles.rb
+!bin/update-vim-plugins
 !bin/vim.symlink
 
 !.config/
