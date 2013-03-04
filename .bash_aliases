@@ -53,7 +53,6 @@ if [ 1000 -ne 0 ]; then
     alias reboot='sudo reboot'
     alias halt='sudo halt'
     alias update='sudo pacman -Syu'
-    alias netcfg='sudo netcfg2'
 fi
 
 # ls
