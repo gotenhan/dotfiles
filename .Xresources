@@ -2,7 +2,7 @@
 !
 !  X T E R M - Setting
 !
-!
+
 XTerm*background:                       black
 XTerm*foreground:                       grey75
 XTerm*cursorColor:                      darkorange1
@@ -51,7 +51,8 @@ XTerm*color15:                          #FFFFFF
 !
 !  U X T E R M - Setting
 !
-!
+!-------------------------------------------------------------------------------
+
 UXTerm*background:                       black
 UXTerm*foreground:                       grey75
 UXTerm*cursorColor:                      darkorange1
@@ -95,3 +96,9 @@ UXTerm*color14:                          #B0E2FF
 !white
 UXTerm*color7:                           #DCDCCC
 UXTerm*color15:                          #FFFFFF
+
+*VT100*translations:    #override \n\
+   <Btn2Up>:      insert-selection(PRIMARY, CUT_BUFFER0) \n\
+   <BtnUp>:       select-end(PRIMARY, CUT_BUFFER0) \n\
+   Ctrl Shift <Key>v:        insert-selection(CLIPBOARD, CUT_BUFFER1) \n\
+   Ctrl Shift <Key>c:        copy-selection(CLIPBOARD, CUT_BUFFER1)
