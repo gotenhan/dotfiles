@@ -96,13 +96,12 @@ nmap <Leader>T :TagbarToggle<CR>
 let g:tagbar_expand = 0
 
 let g:speckyBannerKey        = "<Leader>rb"
-let g:speckyQuoteSwitcherKey = "<Leader>r'"
 let g:speckyRunRdocKey       = "<Leader>ri"
 let g:speckySpecSwitcherKey  = "<Leader>rs"
 let g:speckyRunSpecKey       = "<Leader>rr"
-let g:speckyWindowType       = 2
+let g:speckyWindowType       = 1
 let g:speckyRunRdocCmd       = "ri -T -f rdoc"
-let g:speckyRunSpecCmd       = "rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter"
+let g:speckyRunSpecCmd       = "be rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb  -f SpeckyFormatter"
 
 nmap <leader>o :Utl<CR>
 let g:utl_cfg_hdl_scm_http_system = "silent !opera %u &"
