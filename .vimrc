@@ -4,57 +4,68 @@ Helptags
 
 syntax on
 filetype plugin indent on
+let mapleader=","
 
-"unfold all on start
+"folding
 autocmd BufWinEnter * set foldlevel=999999
+set foldmethod=syntax
 
-colorscheme desert
-
-set expandtab
-set shiftwidth=2
-set tabstop=2
+"searching
 set wrapscan
 set incsearch
 set ignorecase
 set smartcase
-set linebreak
+nmap <Leader>h :setlocal hlsearch!<CR>
+"Search in files
+nmap <leader>A :Ack <C-R><C-W><CR>
+nmap <leader>G :lvimgrep /<C-R><C-W><CR>/ **/*<CR>
+
+"indent
+set expandtab
+set shiftwidth=2
+set tabstop=2
+
+"hidden characters
+set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:¢
+nmap <Leader>H :set list!<CR>
+
+"miscellaneous
 set number
 set mouse=a
-set nowrap
+set clipboard=unnamed,autoselect
+set directory=/home/adrian/tmp,/var/tmp,/tmp
+set cdpath+=,~/anx/sources/git/
+set noswapfile
+set wrap
+set linebreak
 set splitbelow
 set splitright
-set directory=/home/adrian/tmp,/var/tmp,/tmp
-set noswapfile
 set updatetime=4000
-set foldmethod=syntax
-set clipboard=unnamedplus
-set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:¢
-set cdpath+=,~/projekty/
-set hidden
+set bg=dark
+set cursorline
 
+"window sizes
+set winheight=30
+set winwidth=80
+set winminheight=10
+set winminwidth=30
+
+"spelling
 set nospell
 set spelllang=en,pl
+nmap <Leader>S :setlocal spell!<CR>
 
 map <F1> :help <C-R><C-W><CR>
+
 set pastetoggle=<Leader>pt
 
 "Tabs mappings
-let mapleader=","
 nmap <leader>tt :tabnew<cr>
 nmap <leader>te :tabedit
-nmap <leader>tc :tabclose<cr>
 nmap <leader>to :tabonly<cr>
-nmap <leader>tn :tabnext<cr>
-nmap <leader>tp :tabprevious<cr>
 nmap <leader>tf :tabfirst<cr>
 nmap <leader>tl :tablast<cr>
 nmap <leader>tm :tabmove
-
-"Toggles 
-nmap <Leader>h :setlocal hlsearch!<CR>
-nmap <Leader>S :setlocal spell!<CR>
-nmap <Leader>H :set list!<CR>
-nmap <Leader>T :TagbarToggle<CR>
 
 "Formatting
 nmap <Leader>X :%!xmllint --format -<CR>
@@ -67,13 +78,9 @@ nmap <Leader>l :lopen<CR>
 nmap <Leader>L :lclose<CR>
 nmap <Leader>\| :Tabularize /\|<CR>
 
-"Search in files
-nmap <leader>F :Ack 
-nmap <leader>Fw :Ack <C-R><C-W><CR>
-
 let g:xml_syntax_folding=1
 
-set tags=tags,.tagfile,.vimtags
+"easytags
 let g:easytags_autorecurse = 0
 let g:easytags_autoupdate = 1
 let g:easytags_auto_highlight = 0
@@ -83,8 +90,8 @@ let g:easytags_include_members = 1
 let g:easytags_python_enabled = 0
 
 "NERDTree configuration
-autocmd VimEnter * NERDTreeTabsOpen
-autocmd VimEnter * wincmd p
+"autocmd VimEnter * NERDTreeTabsOpen
+"autocmd VimEnter * wincmd p
 
 nmap <Leader>n :NERDTreeTabsToggle<CR>
 let g:nerdtree_tabs_open_on_console_startup = 1
@@ -92,20 +99,24 @@ let g:nerdtree_tabs_meaningful_tab_names = 1
 
 let g:rubycomplete_rails = 1
 
+"tagbar
 nmap <Leader>T :TagbarToggle<CR>
 let g:tagbar_expand = 0
 
+"specky
 let g:speckyBannerKey        = "<Leader>rb"
 let g:speckyRunRdocKey       = "<Leader>ri"
 let g:speckySpecSwitcherKey  = "<Leader>rs"
 let g:speckyRunSpecKey       = "<Leader>rr"
-let g:speckyWindowType       = 1
+let g:speckyWindowType       = 2
 let g:speckyRunRdocCmd       = "ri -T -f rdoc"
-let g:speckyRunSpecCmd       = "be rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb  -f SpeckyFormatter"
+let g:speckyRunSpecCmd       = "be rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter --drb"
 
+"hyperlinks
 nmap <leader>o :Utl<CR>
 let g:utl_cfg_hdl_scm_http_system = "silent !opera %u &"
 
+"fuf
 nmap <Leader>ff :FufFile<CR>
 nmap <Leader>fc :FufCoverageFile<CR>
 nmap <Leader>fd :FufDir<CR>
@@ -113,9 +124,17 @@ nmap <Leader>ft :FufTag<CR>
 nmap <Leader>fB :FufBufferTagAll<CR>
 nmap <Leader>fb :FufBuffer<CR>
 nmap <Leader>fq :FufQuickfix<CR>
-nmap <Leader>fj :FufQuickfix<CR>
+nmap <Leader>fj :FufJumplist<CR>
 nmap <Leader>fl :FufLine!<CR>
 nmap <Leader>fh :FufHelp!<CR>
 noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
 let g:fuf_keyPreview = '<C-v>'
+let g:fuf_previewHeight = 5
+let g:fuf_autoPreview = 1
+
+"filetypes
+autocmd BufEnter * if &filetype == "" | setlocal ft=txt | endif
+
+autocmd FileType haml,sass setlocal foldmethod=indent
+autocmd FileType json,css,scss setlocal foldmethod=marker fmr={,}
