@@ -43,7 +43,7 @@ beautiful.init("/home/adrian/.config/awesome/current_theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "uxterm" --"x-terminal-emulator"
-editor = os.getenv("EDITOR") or "nano"
+editor = os.getenv("EDITOR") or "gvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -58,7 +58,7 @@ local layouts =
 {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.top,
+    awful.layout.suit.tile.bottom,
     awful.layout.suit.spiral,
     awful.layout.suit.max,
 }
@@ -77,7 +77,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "main", "www", "other", "background" }, s, layouts[2])
+    tags[s] = awful.tag({ "main", "www", "other", "background" }, s, layouts[1])
 end
 -- }}}
 
