@@ -1,10 +1,11 @@
-set nocompatible
-call pathogen#infect()
-Helptags
+set nocompatible               " be iMproved
 
+source ~/.vim/bundles.vim
 syntax on
 filetype plugin indent on
 let mapleader=","
+
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 
 "folding
 autocmd BufWinEnter * set foldlevel=999999
@@ -30,6 +31,7 @@ set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:¢
 nmap <Leader>H :set list!<CR>
 
 "miscellaneous
+colorscheme molokai
 set number
 set mouse=a
 set clipboard=unnamed,autoselect
@@ -45,12 +47,14 @@ set bg=dark
 set cursorline
 
 "window sizes
-set winheight=30
+set winheight=4
+set winwidth=10
+set winminheight=4
+set winminwidth=10
+set winheight=20
 set winwidth=80
-set winminheight=10
-set winminwidth=30
 
-#spelling
+"spelling
 set nospell
 set spelllang=en,pl
 nmap <Leader>S :setlocal spell!<CR>
@@ -83,10 +87,10 @@ let g:xml_syntax_folding=1
 "easytags
 let g:easytags_autorecurse = 0
 let g:easytags_autoupdate = 1
-let g:easytags_auto_highlight = 0
+let g:easytags_auto_highlight = 1
 let g:easytags_on_cursorhold = 0
 let g:easytags_dynamic_files = 2
-let g:easytags_include_members = 1
+let g:easytags_include_members = 0
 let g:easytags_python_enabled = 0
 
 "NERDTree configuration
@@ -94,7 +98,7 @@ let g:easytags_python_enabled = 0
 "autocmd VimEnter * wincmd p
 
 nmap <Leader>n :NERDTreeTabsToggle<CR>
-let g:nerdtree_tabs_open_on_console_startup = 1
+let g:nerdtree_tabs_open_on_console_startup = 0
 let g:nerdtree_tabs_meaningful_tab_names = 1
 
 let g:rubycomplete_rails = 1
@@ -127,14 +131,17 @@ nmap <Leader>fq :FufQuickfix<CR>
 nmap <Leader>fj :FufJumplist<CR>
 nmap <Leader>fl :FufLine!<CR>
 nmap <Leader>fh :FufHelp!<CR>
-noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
 let g:fuf_keyPreview = '<C-v>'
-let g:fuf_previewHeight = 5
-let g:fuf_autoPreview = 1
+let g:fuf_previewHeight = 1
+let g:fuf_autoPreview = 0
 
 "filetypes
 autocmd BufEnter * if &filetype == "" | setlocal ft=txt | endif
 
 autocmd FileType haml,sass setlocal foldmethod=indent
 autocmd FileType json,css,scss setlocal foldmethod=marker fmr={,}
+
+"vim-slime
+let g:slime_target = "tmux"
+let g:slime_paste_file = tempname()
