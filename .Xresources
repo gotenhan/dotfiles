@@ -9,7 +9,7 @@ XTerm*cursorColor:                      darkorange1
 XTerm*scrollBar:                        true
 XTterm*utf8:                            2
 XTerm*termName:                         xterm-256color
-XTerm*faceName:                         xft:Andale Mono:pixelsize=12
+XTerm*faceName:                         xft:Inconsolata for Powerline:pixelsize=13
 ! http://invisible-island.net/xterm/xterm.faq.html#tiny_menus
 XTerm.VT100.geometry:                   89x29
 XTerm*saveLines:                        7777
@@ -59,7 +59,7 @@ UXTerm*cursorColor:                      darkorange1
 UXTerm*scrollBar:                        true
 UXTterm*utf8:                            2
 UXTerm*termName:                         xterm-256color
-UXTerm*faceName:                         xft:Andale Mono:pixelsize=12
+UXTerm*faceName:                         xft:Inconsolata for Powerline:pixelsize=13
 ! http://invisible-island.net/xterm/xterm.faq.html#tiny_menus
 UXTerm.VT100.geometry:                   89x29
 UXTerm*saveLines:                        7777
