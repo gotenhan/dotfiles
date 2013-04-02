@@ -46,3 +46,59 @@ XTerm*color14:                          #B0E2FF
 !white
 XTerm*color7:                           #DCDCCC
 XTerm*color15:                          #FFFFFF
+
+!-------------------------------------------------------------------------------
+!
+!  U X T E R M - Setting
+!
+!-------------------------------------------------------------------------------
+
+UXTerm*background:                       grey13
+UXTerm*foreground:                       grey75
+UXTerm*cursorColor:                      darkorange1
+UXTerm*scrollBar:                        true
+UXTterm*utf8:                            2
+UXTerm*termName:                         xterm-256color
+UXTerm*faceName:                         xft:Andale Mono:pixelsize=14
+! http://invisible-island.net/xterm/xterm.faq.html#tiny_menus
+UXTerm.VT100.geometry:                   89x29
+UXTerm*saveLines:                        7777
+UXTerm*metaSendsEscape:                  true
+UXTerm*highlightSelection:               true
+UXTerm*trimSelection:                    true
+UXTerm*cutNewline:                       false
+UXTerm*colorBDMode:                      true
+UTerm*colorBD:                          khaki
+UXTerm*charClass: 3:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48,35:48,58:48,63:48,61:48,44:48,38:48,59:48
+
+!colors
+!black
+UXTerm*color0:                           #171717
+UXTerm*color8:                           #737373
+!red
+UXTerm*color1:                           #FF5E5E
+UXTerm*color9:                           #FF7878
+!green
+UXTerm*color2:                           #9CE82B
+UXTerm*color10:                          #9ACD32
+!yellow
+UXTerm*color3:                           #F0E68C
+UXTerm*color11:                          #EEE8AA
+!blue
+UXTerm*color4:                           #008AFF
+UXTerm*color12:                          #4F98FF
+!magenta
+UXTerm*color5:                           #E88CFF
+UXTerm*color13:                          #EDA6FF
+!cyan
+UXTerm*color6:                           #87CEFA
+UXTerm*color14:                          #B0E2FF
+!white
+UXTerm*color7:                           #DCDCCC
+UXTerm*color15:                          #FFFFFF
+
+*VT100*translations:    #override \n\
+   <Btn2Up>:      insert-selection(PRIMARY, CUT_BUFFER0) \n\
+   <BtnUp>:       select-end(PRIMARY, CUT_BUFFER0) \n\
+   Ctrl Shift <Key>v:        insert-selection(CLIPBOARD, CUT_BUFFER1) \n\
+   Ctrl Shift <Key>c:        copy-selection(CLIPBOARD, CUT_BUFFER1)
