@@ -5,7 +5,7 @@ syntax on
 filetype plugin indent on
 let mapleader=","
 
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+"set rtp+=~/.vim/bundle/vim-powerline/powerline/bindings/vim
 
 "folding
 autocmd BufWinEnter * set foldlevel=999999
@@ -107,15 +107,6 @@ let g:rubycomplete_rails = 1
 nmap <Leader>T :TagbarToggle<CR>
 let g:tagbar_expand = 0
 
-"specky
-let g:speckyBannerKey        = "<Leader>rb"
-let g:speckyRunRdocKey       = "<Leader>ri"
-let g:speckySpecSwitcherKey  = "<Leader>rs"
-let g:speckyRunSpecKey       = "<Leader>rr"
-let g:speckyWindowType       = 2
-let g:speckyRunRdocCmd       = "ri -T -f rdoc"
-let g:speckyRunSpecCmd       = "be rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter --drb"
-
 "hyperlinks
 nmap <leader>o :Utl<CR>
 let g:utl_cfg_hdl_scm_http_system = "silent !opera %u &"
@@ -142,6 +133,6 @@ autocmd BufEnter * if &filetype == "" | setlocal ft=txt | endif
 autocmd FileType haml,sass setlocal foldmethod=indent
 autocmd FileType json,css,scss setlocal foldmethod=marker fmr={,}
 
-"vim-slime
-let g:slime_target = "tmux"
-let g:slime_paste_file = tempname()
+"ragtag
+let g:ragtag_global_maps = 1
+
