@@ -72,6 +72,7 @@ nmap <leader>tl :tablast<cr>
 nmap <leader>tm :tabmove
 
 "Formatting
+nmap <Leader>= mtgg=G't
 nmap <Leader>X :%!xmllint --format -<CR>
 nmap <Leader>J :%!json_reformat<CR>
 vmap <Leader>X :!xmllint --format -<CR>
@@ -80,6 +81,12 @@ vmap <Leader>J :!json_reformat<CR>
 "Local list
 nmap <Leader>l :lopen<CR>
 nmap <Leader>L :lclose<CR>
+
+"Quickfix list
+nmap <Leader>q :copen<CR>
+nmap <Leader>Q :cclose<CR>
+
+"Tabularize
 nmap <Leader>\| :Tabularize /\|<CR>
 
 let g:xml_syntax_folding=1
@@ -107,23 +114,14 @@ let g:rubycomplete_rails = 1
 nmap <Leader>T :TagbarToggle<CR>
 let g:tagbar_expand = 0
 
-"specky
-let g:speckyBannerKey        = "<Leader>rb"
-let g:speckyRunRdocKey       = "<Leader>ri"
-let g:speckySpecSwitcherKey  = "<Leader>rs"
-let g:speckyRunSpecKey       = "<Leader>rr"
-let g:speckyWindowType       = 2
-let g:speckyRunRdocCmd       = "ri -T -f rdoc"
-let g:speckyRunSpecCmd       = "rspec -r ~/.vim/bundle/Specky/ruby/specky_formatter.rb -f SpeckyFormatter --drb"
-
 "hyperlinks
 nmap <leader>o :Utl<CR>
 let g:utl_cfg_hdl_scm_http_system = "silent !opera %u &"
 
 "fuf
-nmap <Leader>ff :FufFile<CR>
-nmap <Leader>fc :FufCoverageFile<CR>
-nmap <Leader>fd :FufDir<CR>
+nmap <Leader>ff :FufRenewCache<CR>:FufFile<CR>
+nmap <Leader>fc :FufRenewCache<CR>:FufCoverageFile<CR>
+nmap <Leader>fd :FufRenewCache<CR>:FufDir<CR>
 nmap <Leader>ft :FufTag<CR>
 nmap <Leader>fB :FufBufferTagAll<CR>
 nmap <Leader>fb :FufBuffer<CR>
@@ -145,3 +143,13 @@ autocmd FileType json,css,scss setlocal foldmethod=marker fmr={,}
 "vim-slime
 let g:slime_target = "tmux"
 let g:slime_paste_file = tempname()
+
+"autodelete trailing spaces
+function! StripTrailingWhitespaces()
+  let l = line(".")
+  let c = col(".")
+  %s/\s\+$//e
+  call cursor(l, c)
+endfun
+
+autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
