@@ -26,8 +26,6 @@ alias bertc='bundle exec rake test:cukes'
 # modified commands
 alias diff='colordiff'              # requires colordiff package
 alias grep='grep --color=auto'
-alias more='vimpager'
-alias less='vimpager'
 alias df='df -h'
 alias du='du -c -h'
 alias mkdir='mkdir -p -v'
