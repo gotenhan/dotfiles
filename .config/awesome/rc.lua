@@ -10,6 +10,8 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+--dynamic tagging
+require('eminent')
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -42,8 +44,8 @@ end
 beautiful.init("/home/adrian/.config/awesome/current_theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "uxterm" --"x-terminal-emulator"
-editor = os.getenv("EDITOR") or "gvim"
+terminal = "uxterm"
+editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -57,9 +59,8 @@ modkey = "Mod4"
 local layouts =
 {
     awful.layout.suit.floating,
-    awful.layout.suit.tile,
     awful.layout.suit.tile.bottom,
-    awful.layout.suit.spiral,
+    awful.layout.suit.tile,
     awful.layout.suit.max,
 }
 -- }}}
@@ -77,56 +78,18 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "main", "www", "other", "background" }, s, layouts[1])
+    tags[s] = awful.tag({ "main", "www", "multimedia", "other" }, s, layouts[2])
 end
 -- }}}
 
 require("freedesktop.utils")
-freedesktop.utils.terminal = terminal  -- default: "xterm"
+freedesktop.utils.terminal = terminal
 freedesktop.utils.icon_theme = { 'Tango', 'whiteglass', 'Mist', 'gnome' }
 
 require('freedesktop.menu')
 
 menu_items = freedesktop.menu.new()
 
-function theme_load(path, theme)
-   local cfg_path = awful.util.getdir("config")
-
-   -- Create a symlink from the given theme to /home/user/.config/awesome/current_theme
-   awful.util.spawn("ln -sfn " .. path .. "/" .. theme .. " " .. cfg_path .. "/current_theme")
-   awesome.restart()
-end
-
-function theme_menu()
-   local thememenu = {}
-   local systhememenu = {}
-
-   local themepath = awful.util.getdir("config") .. "/themes/"
-   local systhemepath = "/usr/share/awesome/themes/"
-
-   -- List your theme files and feed the menu table
-   local cmd = "ls -1 " .. themepath
-   local syscmd = "ls -1 " .. systhemepath
-
-   local f = io.popen(cmd)
-   for l in f:lines() do
-	  local item = { l, function () theme_load(themepath, l) end }
-	  table.insert(thememenu, item)
-   end
-   f:close()
-
-   local sysf = io.popen(syscmd)
-   for l in sysf:lines() do
-	  local item = { l, function () theme_load(systhemepath, l) end }
-	  table.insert(systhememenu, item)
-   end
-   sysf:close()
-   table.insert(thememenu, { "system", systhememenu} )
-
-   return thememenu
-end
-
-mythememenu = theme_menu()
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
@@ -136,19 +99,16 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
-local shutdowncmd = 'poweroff' 
+local shutdowncmd = 'poweroff'
 local rebootcmd = 'reboot'
-local hibernatecmd = 'dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Hibernate'
 local suspendcmd = 'suspend'
 
 systemmenu = {
   { "suspend", function() awful.util.spawn(suspendcmd) end  },
-  { "hibernate", function() awful.util.spawn(hibernatecmd) end },
   { "reboot", function() awful.util.spawn(rebootcmd) end },
   { "shutdown", function() awful.util.spawn(shutdowncmd) end }
 }
 
-table.insert(menu_items, { "themes", mythememenu })
 table.insert(menu_items, { "awesome", myawesomemenu, beautiful.awesome_icon })
 table.insert(menu_items, { "system", systemmenu })
 table.insert(menu_items, { "open terminal", terminal, freedesktop.utils.lookup_icon({icon = 'terminal'}) })
@@ -291,9 +251,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ "Mod1" }, "Tab", function ()
-      local cmenu = awful.menu.clients({width=245}, {keygrabber=true})
+      local cmenu = awful.menu.clients({width=250}, {keygrabber=true})
     end),
-    
+
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
@@ -406,14 +366,22 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons,
                    } },
-    { rule = { class = "Opera" },
+    { rule_any = { class = { "Opera", "Chromium" } },
       properties = { tag = tags[1][2], switchtotag = tags[1][2], focus = true } },
-    { rule_any = { class = { "Pidgin", "Clementine" } },
+    { rule_any = { class = { "Pidgin", "Deadbeef" } },
       properties = { tag = tags[1][4], switchtotag = tags[1][4], focus = true } },
     { rule = { class = "XTerm" },
-      properties = { opacity = 0.75 } },
+      properties = { opacity = 0.90 } },
     { rule_any = { class = { "pinentry", "Volwheel", "Operapluginwrapper-native" } },
-      properties = { floating = true } }
+      properties = { floating = true } },
+    { rule_any = { instance = { "cairo-dock", "synapse" } },
+      properties = {
+        border_width = 0,
+        floating = true,
+        ontop = true,
+        focus = false
+      }
+    },
   }
 -- }}}
 
@@ -444,14 +412,16 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c) 
-  c.border_color = beautiful.border_focus 
+client.connect_signal("focus", function(c)
+  c.border_color = beautiful.border_focus
 end)
-client.connect_signal("unfocus", function(c) 
-  c.border_color = beautiful.border_normal 
+client.connect_signal("unfocus", function(c)
+  c.border_color = beautiful.border_normal
 end)
 -- }}}
 
 naughty.config.presets.normal.opacity = 0.8
 naughty.config.presets.low.opacity = 0.8
 naughty.config.presets.critical.opacity = 0.8
+
+awful.util.spawn_with_shell('dex -a -e Awesome')
